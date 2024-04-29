@@ -11,9 +11,6 @@ const cors = require("cors");
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-app.set("view engine", "ejs");
-app.set("views", path.join(__dirname, "views"));
-
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use((req, res, next) => {
@@ -46,21 +43,28 @@ app.use(
   })
 );
 
+function connectWithRetry() {
+  connectDB()
+    .then(() => console.log("MongoDB connected successfully"))
+    .catch((err) => {
+      console.error("MongoDB connection failed, retrying...", err);
+      setTimeout(connectWithRetry, 5000);
+    });
+}
 connectWithRetry();
 
 app.get("/", (req, res) => {
-  const nonce = crypto.randomBytes(16).toString("base64");
   let filePath = path.join(__dirname, "public", "index.html");
+  console.log("Trying to read file from:", filePath);
   fs.readFile(filePath, "utf8", (err, html) => {
     if (err) {
       console.error("Error reading file:", err);
       return res.status(500).send("Error loading the page");
     }
-    html = html.replace("%CSP_NONCE%", nonce);
+    html = html.replace("%CSP_NONCE%", res.locals.nonce);
     res.send(html);
   });
 });
-console.log("Trying to read file from:", filePath);
 
 app.use((err, req, res, next) => {
   console.error(err.stack);
@@ -75,12 +79,3 @@ app.use((err, req, res, next) => {
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
-
-function connectWithRetry() {
-  connectDB()
-    .then(() => console.log("MongoDB connected successfully"))
-    .catch((err) => {
-      console.error("MongoDB connection failed, retrying...", err);
-      setTimeout(connectWithRetry, 5000);
-    });
-}
