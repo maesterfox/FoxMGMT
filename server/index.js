@@ -11,8 +11,11 @@ const cors = require("cors");
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// Serve static files from the server and client public directories
 app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(path.join(__dirname, "../client/public")));
 
+// Middleware to handle CSP and generate nonce
 app.use((req, res, next) => {
   const nonce = crypto.randomBytes(16).toString("base64");
   res.locals.nonce = nonce;
@@ -27,6 +30,7 @@ app.use((req, res, next) => {
   })(req, res, next);
 });
 
+// CORS configuration
 app.use(
   cors({
     origin: ["https://foxmgmt.onrender.com"],
@@ -35,6 +39,7 @@ app.use(
   })
 );
 
+// GraphQL endpoint configuration
 app.use(
   "/graphql",
   graphqlHTTP({
@@ -43,6 +48,7 @@ app.use(
   })
 );
 
+// MongoDB connection with retry logic
 function connectWithRetry() {
   connectDB()
     .then(() => console.log("MongoDB connected successfully"))
@@ -53,19 +59,22 @@ function connectWithRetry() {
 }
 connectWithRetry();
 
+// Serve the index page with nonce injected
 app.get("/", (req, res) => {
-  let filePath = path.join(__dirname, "public", "index.html");
+  const nonce = res.locals.nonce;
+  let filePath = path.join(__dirname, "../client/public/index.html");
   console.log("Trying to read file from:", filePath);
   fs.readFile(filePath, "utf8", (err, html) => {
     if (err) {
       console.error("Error reading file:", err);
       return res.status(500).send("Error loading the page");
     }
-    html = html.replace("%CSP_NONCE%", res.locals.nonce);
+    html = html.replace("%CSP_NONCE%", nonce);
     res.send(html);
   });
 });
 
+// Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(err.statusCode || 500).send({
@@ -76,6 +85,7 @@ app.use((err, req, res, next) => {
   });
 });
 
+// Start the server
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
