@@ -33,7 +33,6 @@ app.use((req, res, next) => {
 // CORS configuration
 app.use(
   cors({
-    origin: ["https://foxmgmt.onrender.com"],
     methods: ["GET", "POST"],
     credentials: true,
   })
