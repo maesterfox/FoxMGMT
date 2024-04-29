@@ -51,10 +51,16 @@ connectWithRetry();
 app.get("/", (req, res) => {
   const nonce = crypto.randomBytes(16).toString("base64");
   let filePath = path.join(__dirname, "public", "index.html");
-  let html = fs.readFileSync(filePath, "utf8");
-  html = html.replace("%CSP_NONCE%", nonce);
-  res.send(html);
+  fs.readFile(filePath, "utf8", (err, html) => {
+    if (err) {
+      console.error("Error reading file:", err);
+      return res.status(500).send("Error loading the page");
+    }
+    html = html.replace("%CSP_NONCE%", nonce);
+    res.send(html);
+  });
 });
+console.log("Trying to read file from:", filePath);
 
 app.use((err, req, res, next) => {
   console.error(err.stack);
