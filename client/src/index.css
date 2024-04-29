@@ -1,0 +1,106 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: linear-gradient(to right, #064d94, #251a5e, #ff689f);
+  color: #251e1e;
+  text-shadow: 0px 1px 1px rgba(0, 0, 0, 0.1);
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+  background-color: rgba(247, 249, 255, 0.8);
+  padding: 2px 4px;
+  border-radius: 4px;
+}
+
+.navbar-brand {
+  color: #df3ca6;
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.navbar-brand img {
+  width: 30px;
+  margin-right: 10px;
+}
+
+.btn {
+  font-size: 15px;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.btn-primary, .bg-primary {
+  background: linear-gradient(45deg, #df3ca6, #c94f7c);
+  border: none;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(45deg, #c94f7c, #df3ca6);
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.2);
+  opacity: 1;
+  
+}
+
+.btn-secondary {
+  background: linear-gradient(45deg, #7430f9, #5018d4);
+}
+
+.btn-secondary:hover {
+  background: linear-gradient(45deg, #5018d4, #7430f9);
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.2);
+  opacity: 1;
+  transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.icon {
+  margin-right: 5px;
+  opacity: 0.9;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse; /* Ensures borders between cells are shared */
+  border-radius: 8px !important;
+}
+
+th, td {
+  padding: 12px 15px; /* Ample padding for content */
+  border-bottom: 1px solid #ddd; /* Light border for each row */
+  text-align: left; /* Align text to the left, can be adjusted as needed */
+  font-size: 16px; /* Sufficient size for readability */
+}
+
+tr:hover {
+  background-color: #f1f1f1; /* Subtle hover effect for rows */
+}
+
+tr:nth-child(even) {
+  background-color: #fafafa; /* Zebra striping for rows */
+}
+
+tr:nth-child(odd) {
+  background-color: #fff; /* Keep odd rows white */
+}
+
+/* Styling the delete button within the table */
+.btn-danger {
+  color: white; /* Text color */
+  background-color: #dc3545; /* Bootstrap’s .btn-danger background color */
+  border: none; /* No border */
+  cursor: pointer; /* Pointer cursor on hover */
+  transition: background-color 0.3s ease; /* Smooth transition for hover */
+}
+
+.btn-danger:hover {
+  background-color: #c82333; /* Darker shade on hover for better interaction */
+}
+
+.btn-sm {
+  padding: 5px 10px; /* Smaller padding for a small button */
+  font-size: 14px; /* Smaller font size for a small button */
+}
