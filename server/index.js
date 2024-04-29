@@ -24,7 +24,7 @@ app.use(
 connectDB()
   .then((db) => {
     // Specify the collection
-    const collection = db.collection("general");
+    const collection = db.collection("test");
 
     // Now you can use the `collection` object to perform database operations
   })
