@@ -1,72 +1,80 @@
 const express = require("express");
-require("dotenv").config();
-const cors = require("cors");
 const helmet = require("helmet");
 const crypto = require("crypto");
 const { graphqlHTTP } = require("express-graphql");
+const path = require("path");
+const fs = require("fs");
 const schema = require("./schema/schema");
 const connectDB = require("./config/db");
+const cors = require("cors");
 
-const mode = process.env.NODE_ENV || "development";
+const app = express();
+const PORT = process.env.PORT || 5000;
 
-const app = express(); // Initialize the Express app
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
 
-// Use helmet middleware with CSP configuration
+app.use(express.static(path.join(__dirname, "public")));
+
 app.use((req, res, next) => {
-  // Generate a nonce for each request
   const nonce = crypto.randomBytes(16).toString("base64");
-
-  // Use helmet to set the CSP with the nonce
+  res.locals.nonce = nonce;
   helmet.contentSecurityPolicy({
     directives: {
-      "default-src": ["'self'"], // Set default-src to 'self'
-      "script-src": ["'self'", `'nonce-${nonce}'`], // Allow scripts from 'self' and the current nonce
-      "style-src": ["'self'", "'unsafe-inline'"], // Allow styles from 'self' and inline styles
-      "img-src": ["'self'", "data:"], // Allow images from 'self' and data URIs
-      "connect-src": ["'self'"], // Allow connections to 'self' (API calls, Ajax, WebSocket)
+      "default-src": ["'self'"],
+      "script-src": ["'self'", `'nonce-${nonce}'`, "https://cdn.jsdelivr.net"],
+      "style-src": ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net"],
+      "img-src": ["'self'", "data:"],
+      "connect-src": ["'self'"],
     },
-    reportOnly: false, // Set to true to only report violations without blocking
-  })(req, res, next); // Call helmet as middleware
-
-  // Store the nonce in the response locals for use in the application
-  res.locals.nonce = nonce;
-
-  next(); // Continue to the next middleware
+  })(req, res, next);
 });
 
-// Middleware
-app.use(cors());
+app.use(
+  cors({
+    origin: ["https://foxmgmt.onrender.com"],
+    methods: ["GET", "POST"],
+    credentials: true,
+  })
+);
 
-// GraphQL endpoint
 app.use(
   "/graphql",
   graphqlHTTP({
     schema,
-    graphiql: mode === "development",
+    graphiql: process.env.NODE_ENV === "development",
   })
 );
 
-// Connect to MongoDB
-connectDB()
-  .then((db) => {
-    // Specify the collection
-    const collection = db.collection("test");
+connectWithRetry();
 
-    // Now you can use the `collection` object to perform database operations
-  })
-  .catch((err) => {
-    console.error(err);
-    process.exit(1);
-  });
-
-// Error handling middleware
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).send("Internal Server Error");
+app.get("/", (req, res) => {
+  const nonce = crypto.randomBytes(16).toString("base64");
+  let filePath = path.join(__dirname, "public", "index.html");
+  let html = fs.readFileSync(filePath, "utf8");
+  html = html.replace("%CSP_NONCE%", nonce);
+  res.send(html);
 });
 
-// Start the server
-const PORT = process.env.PORT || 5000;
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(err.statusCode || 500).send({
+    error: {
+      message: err.message || "Internal Server Error",
+      status: err.statusCode || 500,
+    },
+  });
+});
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+
+function connectWithRetry() {
+  connectDB()
+    .then(() => console.log("MongoDB connected successfully"))
+    .catch((err) => {
+      console.error("MongoDB connection failed, retrying...", err);
+      setTimeout(connectWithRetry, 5000);
+    });
+}
