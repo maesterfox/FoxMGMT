@@ -11,9 +11,8 @@ const cors = require("cors");
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Serve static files from the server and client public directories
-app.use(express.static(path.join(__dirname, "public")));
-app.use(express.static(path.join(__dirname, "../client/build")));
+// Serve static files from the client public directory
+app.use(express.static(path.join(__dirname, "../client/public")));
 
 // Middleware to handle CSP and generate nonce
 app.use((req, res, next) => {
@@ -58,19 +57,9 @@ function connectWithRetry() {
 }
 connectWithRetry();
 
-// Serve the index page with nonce injected
-app.get("/", (req, res) => {
-  const nonce = res.locals.nonce;
-  let filePath = path.join(__dirname, "../client/build/index.html");
-  console.log("Trying to read file from:", filePath);
-  fs.readFile(filePath, "utf8", (err, html) => {
-    if (err) {
-      console.error("Error reading file:", err);
-      return res.status(500).send("Error loading the page");
-    }
-    html = html.replace("%CSP_NONCE%", nonce);
-    res.send(html);
-  });
+// Serve the index.html file
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../client/public/index.html"));
 });
 
 // Error handling middleware
