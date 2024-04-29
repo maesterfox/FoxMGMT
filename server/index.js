@@ -13,7 +13,7 @@ const PORT = process.env.PORT || 5000;
 
 // Serve static files from the server and client public directories
 app.use(express.static(path.join(__dirname, "public")));
-app.use(express.static(path.join(__dirname, "../client/public")));
+app.use(express.static(path.join(__dirname, "../client/build")));
 
 // Middleware to handle CSP and generate nonce
 app.use((req, res, next) => {
@@ -61,7 +61,7 @@ connectWithRetry();
 // Serve the index page with nonce injected
 app.get("/", (req, res) => {
   const nonce = res.locals.nonce;
-  let filePath = path.join(__dirname, "../client/public/index.html");
+  let filePath = path.join(__dirname, "../client/build/index.html");
   console.log("Trying to read file from:", filePath);
   fs.readFile(filePath, "utf8", (err, html) => {
     if (err) {
