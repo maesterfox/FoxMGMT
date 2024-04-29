@@ -6,7 +6,7 @@ const schema = require("./schema/schema");
 const connectDB = require("./config/db");
 const mode = process.env.NODE_ENV || "development";
 
-const app = express();
+const app = express(); // Initialize the Express app
 
 // Middleware
 app.use(cors());
