@@ -2,6 +2,7 @@ const express = require("express");
 require("dotenv").config();
 const cors = require("cors");
 const helmet = require("helmet");
+const crypto = require("crypto");
 const { graphqlHTTP } = require("express-graphql");
 const schema = require("./schema/schema");
 const connectDB = require("./config/db");
@@ -11,15 +12,27 @@ const mode = process.env.NODE_ENV || "development";
 const app = express(); // Initialize the Express app
 
 // Use helmet middleware with CSP configuration
-app.use(
+app.use((req, res, next) => {
+  // Generate a nonce for each request
+  const nonce = crypto.randomBytes(16).toString("base64");
+
+  // Use helmet to set the CSP with the nonce
   helmet.contentSecurityPolicy({
     directives: {
-      defaultSrc: ["'self'"],
-      scriptSrc: ["'self'", "'unsafe-inline'"],
-      imgSrc: ["'self'", "data:"],
+      "default-src": ["'self'"], // Set default-src to 'self'
+      "script-src": ["'self'", `'nonce-${nonce}'`], // Allow scripts from 'self' and the current nonce
+      "style-src": ["'self'", "'unsafe-inline'"], // Allow styles from 'self' and inline styles
+      "img-src": ["'self'", "data:"], // Allow images from 'self' and data URIs
+      "connect-src": ["'self'"], // Allow connections to 'self' (API calls, Ajax, WebSocket)
     },
-  })
-);
+    reportOnly: false, // Set to true to only report violations without blocking
+  })(req, res, next); // Call helmet as middleware
+
+  // Store the nonce in the response locals for use in the application
+  res.locals.nonce = nonce;
+
+  next(); // Continue to the next middleware
+});
 
 // Middleware
 app.use(cors());
