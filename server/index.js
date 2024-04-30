@@ -12,7 +12,7 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Serve static files from the client public directory
-app.use(express.static(path.join(__dirname, "../client/public")));
+app.use(express.static(path.join(__dirname, "../client/build")));
 
 // Middleware to handle CSP and generate nonce
 app.use((req, res, next) => {
@@ -59,7 +59,12 @@ connectWithRetry();
 
 // Serve the index.html file
 app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "../client/public/index.html"));
+  res.sendFile(path.join(__dirname, "../client/build/index.html"));
+});
+
+app.use((req, res, next) => {
+  console.log("Request for:", req.path);
+  next();
 });
 
 // Error handling middleware
