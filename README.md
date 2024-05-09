@@ -11,6 +11,8 @@ Fox ProMGMT is a full-stack project management system built with GraphQL, Expres
 - **GraphQL API**: Utilize the power of GraphQL for flexible and efficient data querying and manipulation.
 - **Responsive UI**: The user interface is designed to be responsive, ensuring a seamless experience across various devices and screen sizes.
 
+![alt text](image.png)
+
 ## Getting Started
 
 To get started with Fox ProMGMT, follow these steps:
