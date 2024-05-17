@@ -17,10 +17,6 @@
       "dest": "/api/graphql.js"
     },
     {
-      "src": "/api/(.*)",
-      "dest": "/api/index.js"
-    },
-    {
       "src": "/(.*)",
       "dest": "/api/index.js"
     }
