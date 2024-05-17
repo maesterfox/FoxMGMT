@@ -1,7 +1,6 @@
-require("dotenv").config(); // Ensure this is at the top if you're using dotenv
+require("dotenv").config();
 const mongoose = require("mongoose");
 mongoose.set("strictQuery", false);
-console.log(process.env.MONGO_URI); // This will print the value of MONGO_URI
 
 const connectDB = async () => {
   if (!process.env.MONGO_URI) {
@@ -16,10 +15,10 @@ const connectDB = async () => {
     });
 
     console.log(`MongoDB Connected: ${conn.connection.host}`);
-    return conn.connection.db; // Return the database connection
+    return conn.connection.db;
   } catch (error) {
     console.error(`Error connecting to MongoDB: ${error.message}`);
-    process.exit(1); // Exit process with failure
+    process.exit(1);
   }
 };
 
