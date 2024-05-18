@@ -1,9 +1,9 @@
 const path = require("path");
 const express = require("express");
-const cors = require("cors"); // Import CORS
 const { graphqlHTTP } = require("express-graphql");
 const schema = require("./schema/schema");
 const connectDB = require("./db");
+const cors = require("./cors"); // Import the CORS configuration
 
 const app = express();
 
@@ -13,43 +13,8 @@ connectDB();
 // Middleware to parse JSON
 app.use(express.json());
 
-// Configure CORS middleware
-const allowedOrigins = [
-  "https://foxmgmt-production.up.railway.app",
-  "https://foxmgmt.davidfoxdev.co.uk",
-];
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      // Allow requests with no origin (like mobile apps or curl requests)
-      if (!origin) return callback(null, true);
-      if (allowedOrigins.includes(origin)) {
-        return callback(null, true);
-      } else {
-        const msg =
-          "The CORS policy for this site does not allow access from the specified Origin.";
-        return callback(new Error(msg), false);
-      }
-    },
-  })
-);
-
-// Manually set headers to allow all origins (CORS middleware will handle this part now)
-// app.use((req, res, next) => {
-//   res.setHeader("Access-Control-Allow-Origin", "*");
-//   res.setHeader(
-//     "Access-Control-Allow-Methods",
-//     "GET, POST, OPTIONS, PUT, PATCH, DELETE"
-//   );
-//   res.setHeader(
-//     "Access-Control-Allow-Headers",
-//     "X-Requested-With, content-type, Authorization"
-//   );
-//   if (req.method === "OPTIONS") {
-//     return res.sendStatus(200);
-//   }
-//   next();
-// });
+// Apply the CORS middleware
+app.use(cors);
 
 // GraphQL endpoint
 app.use(
