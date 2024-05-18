@@ -1,9 +1,9 @@
 const path = require("path");
 const express = require("express");
+const cors = require("./cors"); // Import the CORS configuration
 const { graphqlHTTP } = require("express-graphql");
 const schema = require("./schema/schema");
 const connectDB = require("./db");
-const cors = require("./cors"); // Import the CORS configuration
 
 const app = express();
 
@@ -15,6 +15,9 @@ app.use(express.json());
 
 // Apply the CORS middleware
 app.use(cors);
+
+// Handle preflight requests for all routes
+app.options("*", cors);
 
 // GraphQL endpoint
 app.use(
