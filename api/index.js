@@ -1,11 +1,17 @@
 const path = require("path");
-const fs = require("fs");
+const express = require("express");
+const graphql = require("./graphql");
+const app = express();
 
-module.exports = (req, res) => {
-  const staticPath = path.join(__dirname, "../client/build", req.url);
-  if (fs.existsSync(staticPath)) {
-    return res.sendFile(staticPath);
-  }
+app.use(express.static(path.join(__dirname, "../client/build")));
 
+app.use("/graphql", graphql);
+
+app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "../client/build/index.html"));
-};
+});
+
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
