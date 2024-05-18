@@ -2,17 +2,23 @@ const path = require("path");
 const express = require("express");
 const cors = require("cors");
 const graphql = require("./graphql");
+const connectDB = require("./db");
+
 const app = express();
+
+// Connect to MongoDB
+connectDB();
 
 // Configure CORS
 const allowedOrigins = [
+  "http://localhost:3000", // Allow local development
+  "https://foxmgmt.davidfoxdev.co.uk", // Production URL
   "https://fox-mgmt-maesterfoxs-projects.vercel.app",
-  "https://foxmgmt.davidfoxdev.co.uk",
 ];
 
 const corsOptions = {
   origin: function (origin, callback) {
-    if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);
     } else {
       callback(new Error("Not allowed by CORS"));
