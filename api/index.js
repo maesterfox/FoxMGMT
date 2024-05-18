@@ -22,12 +22,21 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
+// Middleware to parse JSON
+app.use(express.json());
+
 app.use(express.static(path.join(__dirname, "../client/build")));
 
 app.use("/api/graphql", graphql);
 
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "../client/build/index.html"));
+});
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send("Something broke!");
 });
 
 const PORT = process.env.PORT || 5000;
