@@ -1,6 +1,5 @@
 const Project = require("../models/Project");
 const Client = require("../models/Client");
-const Questions = require("../models/Questions");
 
 const {
   GraphQLObjectType,
@@ -26,25 +25,6 @@ const ProjectType = new GraphQLObjectType({
         return Client.findById(parent.clientId);
       },
     },
-  }),
-});
-
-const QuestionType = new GraphQLObjectType({
-  name: "Question",
-  fields: () => ({
-    id: { type: GraphQLID },
-    text: { type: GraphQLString },
-    difficulty: { type: GraphQLString },
-    tags: { type: new GraphQLList(GraphQLString) },
-  }),
-});
-
-const TopicType = new GraphQLObjectType({
-  name: "Topic",
-  fields: () => ({
-    id: { type: GraphQLID },
-    topicName: { type: GraphQLString },
-    questions: { type: new GraphQLList(QuestionType) },
   }),
 });
 
@@ -86,19 +66,6 @@ const RootQuery = new GraphQLObjectType({
       args: { id: { type: GraphQLID } },
       resolve(parent, args) {
         return Client.findById(args.id);
-      },
-    },
-    topics: {
-      type: new GraphQLList(TopicType),
-      resolve(parent, args) {
-        return Questions.find(); // Assuming 'Questions' stores topics
-      },
-    },
-    topic: {
-      type: TopicType,
-      args: { id: { type: GraphQLID } },
-      resolve(parent, args) {
-        return Questions.findById(args.id);
       },
     },
   },
