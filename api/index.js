@@ -1,7 +1,7 @@
 const path = require("path");
 const express = require("express");
-const cors = require("cors");
-const graphql = require("./graphql");
+const { graphqlHTTP } = require("express-graphql");
+const schema = require("./schema/schema");
 const connectDB = require("./db");
 
 const app = express();
@@ -9,32 +9,43 @@ const app = express();
 // Connect to MongoDB
 connectDB();
 
-// Configure CORS
-const allowedOrigins = [
-  "http://localhost:3000", // Allow local development
-  "https://foxmgmt.davidfoxdev.co.uk", // Production URL
-  "https://fox-mgmt-maesterfoxs-projects.vercel.app",
-];
-
-const corsOptions = {
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
-};
-
-app.use(cors(corsOptions));
-
 // Middleware to parse JSON
 app.use(express.json());
 
+// Manually set headers to allow all origins
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET, POST, OPTIONS, PUT, PATCH, DELETE"
+  );
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "X-Requested-With, content-type, Authorization"
+  );
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(200);
+  }
+  next();
+});
+
+// GraphQL endpoint
+app.use(
+  "/api/graphql",
+  graphqlHTTP({
+    schema,
+    graphiql: process.env.NODE_ENV === "development",
+    customFormatErrorFn: (error) => {
+      console.error("GraphQL Error:", error);
+      return { message: error.message, status: error.status };
+    },
+  })
+);
+
+// Serve static files
 app.use(express.static(path.join(__dirname, "../client/build")));
 
-app.use("/api/graphql", graphql);
-
+// Serve frontend
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "../client/build/index.html"));
 });

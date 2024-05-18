@@ -8,7 +8,7 @@ const connectDB = async () => {
     process.exit(1);
   }
 
-  console.log("MONGO_URI:", process.env.MONGO_URI);
+  console.log("Connecting to MongoDB with URI:", process.env.MONGO_URI);
 
   try {
     const conn = await mongoose.connect(process.env.MONGO_URI, {

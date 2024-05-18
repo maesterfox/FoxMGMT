@@ -25,9 +25,7 @@ const cache = new InMemoryCache({
 });
 
 const client = new ApolloClient({
-  uri:
-    "https://foxmgmt.davidfoxdev.co.uk/api/graphql" ||
-    "http://localhost:5000/graphql",
+  uri: "http://localhost:5000/api/graphql",
   cache: cache,
 });
 
