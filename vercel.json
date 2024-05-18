@@ -9,7 +9,7 @@
       "src": "client/package.json",
       "use": "@vercel/static-build",
       "config": {
-        "distDir": "../build"
+        "distDir": "../client/build" 
       }
     }
   ],
@@ -25,6 +25,16 @@
     {
       "src": "/(.*)",
       "dest": "/client/build/$1"
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/graphql"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ]
 }

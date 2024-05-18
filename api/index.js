@@ -42,10 +42,10 @@ app.use(
   })
 );
 
-// Serve static files
+// Serve static files from the React app
 app.use(express.static(path.join(__dirname, "../client/build")));
 
-// Serve frontend
+// Catch-all to serve index.html for client-side routing
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "../client/build/index.html"));
 });

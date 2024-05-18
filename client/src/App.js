@@ -25,29 +25,24 @@ const cache = new InMemoryCache({
 });
 
 const client = new ApolloClient({
-  uri:
-    "https://foxmgmt-production.up.railway.app/api/graphql" ||
-    "https://foxmgmt.davidfoxdev.co.uk/api/graphql" ||
-    "http://localhost:5000/api/graphql",
+  uri: process.env.REACT_APP_API_URL || "http://localhost:5000/api/graphql",
   cache: cache,
 });
 
 function App() {
   return (
-    <>
-      <ApolloProvider client={client}>
-        <Router>
-          <Header />
-          <div className="container">
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/projects/:id" element={<Project />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </div>
-        </Router>
-      </ApolloProvider>
-    </>
+    <ApolloProvider client={client}>
+      <Router>
+        <Header />
+        <div className="container">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/projects/:id" element={<Project />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </div>
+      </Router>
+    </ApolloProvider>
   );
 }
 
