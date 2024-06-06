@@ -5,6 +5,7 @@ import Home from "./pages/Home";
 import Project from "./pages/Project";
 import NotFound from "./pages/NotFound";
 import Clients from "./components/Clients"; // Import Clients component
+import ClientDetail from "./pages/ClientDetail"; // Import ClientDetail component
 
 const cache = new InMemoryCache({
   typePolicies: {
@@ -27,8 +28,9 @@ const cache = new InMemoryCache({
 
 const client = new ApolloClient({
   uri:
-    "https://foxmgmt.davidfoxdev.co.uk/api/graphql" ||
-    "http://localhost:5000/api/graphql",
+    process.env.NODE_ENV === "development"
+      ? process.env.REACT_APP_GRAPHQL_API_DEV
+      : process.env.REACT_APP_GRAPHQL_API,
   cache: cache,
 });
 
@@ -41,8 +43,9 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/projects/:id" element={<Project />} />
-            <Route path="/clients" element={<Clients />} />{" "}
-            {/* Add Clients route */}
+            <Route path="/clients" element={<Clients />} />
+            <Route path="/clients/:id" element={<ClientDetail />} />{" "}
+            {/* Add this line */}
             <Route path="*" element={<NotFound />} />
           </Routes>
         </div>

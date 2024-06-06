@@ -5,7 +5,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: linear-gradient(to right, #064d94, #251a5e, #ff689f);
+  background: linear-gradient(to right, #052442, #301c91, #cc31b2);
   color: #251e1e;
   text-shadow: 0px 1px 1px rgba(0, 0, 0, 0.1);
 }
@@ -103,4 +103,70 @@ tr:nth-child(odd) {
 .btn-sm {
   padding: 5px 10px; /* Smaller padding for a small button */
   font-size: 14px; /* Smaller font size for a small button */
+}
+
+/* Add responsive table styles */
+.table-responsive {
+  overflow-x: auto;
+}
+
+@media screen and (max-width: 767px) {
+  .table-responsive {
+    border: 0;
+  }
+
+  .table-responsive > .table {
+    margin-bottom: 0;
+  }
+
+  .table-responsive > .table > thead,
+  .table-responsive > .table > tbody,
+  .table-responsive > .table > tfoot,
+  .table-responsive > .table > tr,
+  .table-responsive > .table > td,
+  .table-responsive > .table > th {
+    display: block;
+  }
+
+  .table-responsive > .table > thead > tr {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+  }
+
+  .table-responsive > .table > tbody > tr > td {
+    border: none;
+    border-bottom: 1px solid #ddd;
+    position: relative;
+    padding-left: 50%;
+    text-align: left;
+    white-space: nowrap;
+  }
+
+  .table-responsive > .table > tbody > tr > td:before {
+    content: attr(data-label);
+    position: absolute;
+    left: 10px;
+    font-weight: bold;
+  }
+
+  /* Hide phone number column on smaller screens */
+  .phone-number {
+    display: none;
+  }
+}
+
+/* Ensure the link covers the entire row and has no default link styling */
+.table-row-link {
+  display: contents;
+}
+
+.table-row-link td {
+  cursor: pointer;
+  color: inherit; /* Inherit text color */
+  text-decoration: none; /* Remove underline */
+}
+
+.table-row-link td:hover {
+  background-color: #f1f1f1; /* Subtle hover effect for cells */
 }

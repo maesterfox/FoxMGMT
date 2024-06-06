@@ -1,6 +1,5 @@
 const Project = require("../models/Project");
 const Client = require("../models/Client");
-
 const {
   GraphQLObjectType,
   GraphQLID,
@@ -99,13 +98,10 @@ const mutation = new GraphQLObjectType({
       args: {
         id: { type: GraphQLNonNull(GraphQLID) },
       },
-      resolve(parent, args) {
-        Project.find({ clientId: args.id }).then((projects) => {
-          projects.forEach((project) => {
-            project.deleteOne();
-          });
-        });
-
+      async resolve(parent, args) {
+        // Find projects linked to the client and delete them
+        await Project.deleteMany({ clientId: args.id });
+        // Then delete the client
         return Client.findByIdAndRemove(args.id);
       },
     },

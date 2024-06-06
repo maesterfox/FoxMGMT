@@ -3,6 +3,7 @@ const cors = require("cors");
 const allowedOrigins = [
   "https://foxmgmt-production.up.railway.app",
   "https://foxmgmt.davidfoxdev.co.uk",
+  "http://localhost:3000",
 ];
 
 module.exports = cors({
