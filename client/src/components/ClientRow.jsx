@@ -5,11 +5,15 @@ import { DELETE_CLIENT } from "../mutations/clientMutations";
 import { GET_CLIENTS } from "../queries/clientQueries";
 import { GET_PROJECTS } from "../queries/projectQueries";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 
 export default function ClientRow({ client }) {
   const [deleteClient] = useMutation(DELETE_CLIENT, {
     variables: { id: client.id },
     refetchQueries: [{ query: GET_CLIENTS }, { query: GET_PROJECTS }],
+    onCompleted: () => {
+      toast.success("Client deleted successfully!");
+    },
   });
 
   return (
